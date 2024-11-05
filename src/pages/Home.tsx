@@ -9,7 +9,7 @@ import SelectRegion from '../components/SelectRegion';
 import Pagenation from '../components/common/Pagenation';
 
 import { queries } from '../api/queries';
-import { regionUrls } from '../utils/constants';
+import { createHandlers } from '../utils/handlers';
 import { getProcessedData } from '../utils/dataProcessing';
 import { usePageStore } from '../store/usePageStore';
 import { PokemonEntry, Result } from '../types/types';
@@ -31,6 +31,15 @@ function Home() {
     setSelectedSortOption,
     setSelectedRegion,
   } = usePageStore();
+
+  // handler
+  const { 
+    handleSortOptions, 
+    handleRegions, 
+    handleSearchChange, 
+    handlePageHover, 
+    handlePageChange 
+  } = createHandlers({setSelectedSortOption, setCurrentPage, setSelectedRegion, setSearchQuery, setFetchedPages, selectedRegion, scrollRef});
 
   // 기본 데이터 요청
   const { data, error, isPending } = useQuery({
@@ -74,45 +83,6 @@ function Home() {
     : selectedRegion === 'All' && hasCount(data)
     ? Math.ceil((data.count || 0) / ITEMS_PER_PAGE)
     : Math.ceil(sortedData.length / ITEMS_PER_PAGE);
-
-
-  // handler
-  const handleSortOptions = (e: SelectChangeEvent<string>) => {
-    setSelectedSortOption(e.target.value);
-    setCurrentPage(1);
-    setFetchedPages(new Set());
-  };
-
-  const handleRegions = (e: SelectChangeEvent<string>) => {
-    const newRegion = e.target.value;
-    setSelectedRegion(newRegion);
-    setSelectedSortOption('Lowest Number');
-    setCurrentPage(1);
-    setFetchedPages(new Set());
-  };
-
-  const handleSearchChange = (query: string) => {
-    setSearchQuery(query);
-    setSelectedRegion('All');
-    setCurrentPage(1);
-    setFetchedPages(new Set());
-  };
-
-  // 페이지 Hover 시 prefetch
-  const handlePageHover = (page: number) => {
-    if (selectedRegion === 'All') {
-      queryClient.prefetchQuery({
-        ...queries.getPrefetchedAllData(selectedRegion, page, ITEMS_PER_PAGE),
-      });
-    }
-  };
-
-  const handlePageChange = (e: ChangeEvent<unknown>, page: number) => {
-    setCurrentPage(page);
-    if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <div ref={scrollRef} className="flex flex-col p-8 gap-8">

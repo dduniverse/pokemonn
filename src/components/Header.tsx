@@ -7,7 +7,7 @@ function Header() {
       <Toolbar>
         <Link to="/" style={{ textDecoration: 'none' }}>
           <img
-              src='src/logo.svg' 
+              src="/logo.svg"
               alt="Logo"
               style={{ width: '6em', height: 'auto' }} 
           />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Skeleton } from '@mui/material';
 
 import PokemonInfo from '../components/PokemonInfo';
@@ -9,14 +9,13 @@ import PokemonNavigation from '../components/PokemonNavigation';
 
 import { GroupedEvolution } from '../types/types';
 import { extractEvolutionData } from '../utils/evolutionUtils';
-import { useSelectedStore } from '../store/useSelectedStore';
 import { usePageStore } from '../store/usePageStore';
 import { queries } from '../api/queries';
 
-
 function Detail() {
   const navigate = useNavigate();
-  const { selectedID, setSelectedID, setSelectedName } = useSelectedStore();
+  const { id } = useParams<{ id: string }>(); // URL에서 id 가져오기
+  const pokemonID = Number(id); // number로 변환
   const { selectedRegion } = usePageStore();
 
   const [prevPokemonName, setPrevPokemonName] = useState<string | null>(null);
@@ -24,7 +23,7 @@ function Detail() {
 
   // 포켓몬 상세 데이터 가져오기
   const { data: pokemonData, error: pokemonError, isPending: isPokemonPending } = useQuery({
-    ...queries.getPokemonDetailData(selectedID)
+    ...queries.getPokemonDetailData(pokemonID)
   });
 
   // 종 데이터 가져오기
@@ -60,8 +59,6 @@ function Detail() {
 
   // 클릭 시 페이지 이동
   const handleClick = (id: number, name: string | null) => {
-    setSelectedID(id);
-    setSelectedName(name);
     navigate(`/detail/${id}`);
   };
 

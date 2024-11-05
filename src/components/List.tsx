@@ -2,7 +2,6 @@ import { Box, ImageList, ImageListItem, Skeleton, Stack, useMediaQuery, useTheme
 import { useNavigate } from 'react-router-dom';
 import { getIdFromUrl } from '../utils/urlUtils';
 import { PokemonDetail, PokemonEntry, Result } from '../types/types';
-import { useSelectedStore } from '../store/useSelectedStore';
 import TypeChip from './common/TypeChip';
 import StatBox from './common/StatBox';
 import PokemonImage from './common/PokemonImage';
@@ -33,12 +32,9 @@ function List({ pokemonData, additionalData, isLoading, error }: PropsList) {
   const isXs = useMediaQuery(theme.breakpoints.down('sm'));
   const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const navigate = useNavigate();
-  const { setSelectedID, setSelectedName } = useSelectedStore();
   const cols = isXs ? 2 : isSm ? 3 : 4;
 
-  const handleClick = (id: number, name: string) => {
-    setSelectedID(id);
-    setSelectedName(name);
+  const handleClick = (id: number) => {
     navigate(`/detail/${id}`);
   };
 
@@ -90,7 +86,7 @@ function List({ pokemonData, additionalData, isLoading, error }: PropsList) {
               cursor: 'pointer',
               p: isXs ? 1 : 2,
             }}
-            onClick={() => handleClick(id, name)}
+            onClick={() => handleClick(id)}
           >
             <Box component="span" sx={{ paddingTop: '0.6em', fontSize: isXs ? '0.6em' : '1em' }}>
               No. <Box component="span" sx={{ fontWeight: 'bold', fontSize: '1em' }}>{id}</Box>

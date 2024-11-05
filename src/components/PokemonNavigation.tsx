@@ -13,9 +13,12 @@ interface PokemonNavigationProps {
 }
 
 function PokemonNavigation({pokemonData, prevPokemonName, nextPokemonName, handleClick}: PokemonNavigationProps) {
-
+  // 마우스가 Hover 될 때 prefetch
   const handleHover = (id: number) => {
     queryClient.prefetchQuery(queries.getPokemonDetailData(id));
+    queryClient.prefetchQuery(queries.getSpeicesByID(id));
+    queryClient.prefetchQuery(queries.getPreviousPokemon(id));
+    queryClient.prefetchQuery(queries.getNextPokemon(id));
   };
 
   return (

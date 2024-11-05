@@ -53,7 +53,13 @@ function List({ pokemonData, additionalData, isLoading, error }: PropsList) {
   }
 
   if (error) {
-    return <div>No data.</div>;
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+        <img src="/No data.jpg" alt="No data founded" style={{ width: '200px', height: 'auto' }} />
+        <p>일치하는 검색 결과가 없습니다.</p>
+        <p>검색어를 확인해주세요.</p>
+      </Box>
+    );
   }
 
   return (

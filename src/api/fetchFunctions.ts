@@ -48,6 +48,12 @@ export const fetchSpeciesData = async (speciesUrl: string) => {
   return SpeciesDataSchema.parse(data);
 };
 
+export const fetchSpeciesDataByID = async (pokemonId: number) => {
+  const newUrl = `https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`;
+  const data = await fetchData(newUrl);
+  return SpeciesDataSchema.parse(data);
+}
+
 // 진화 데이터 요청
 export const fetchEvolutionData = async (evolutionUrl: string) => {
   if (!evolutionUrl) return null;

@@ -11,6 +11,7 @@ import { GroupedEvolution } from '../types/types';
 import { extractEvolutionData } from '../utils/evolutionUtils';
 import { usePageStore } from '../store/usePageStore';
 import { queries } from '../api/queries';
+import { usePokemonNavigationStore } from '../store/usePokemonNavigationStore';
 
 function Detail() {
   const navigate = useNavigate();
@@ -18,8 +19,7 @@ function Detail() {
   const pokemonID = Number(id); // number로 변환
   const { selectedRegion } = usePageStore();
 
-  const [prevPokemonName, setPrevPokemonName] = useState<string | null>(null);
-  const [nextPokemonName, setNextPokemonName] = useState<string | null>(null);
+  const { setPrevPokemonName, setNextPokemonName, prevPokemonName, nextPokemonName } = usePokemonNavigationStore();
 
   // 포켓몬 상세 데이터 가져오기
   const { data: pokemonData, error: pokemonError, isPending: isPokemonPending } = useQuery({
@@ -58,7 +58,7 @@ function Detail() {
   }, [nextPokemonData]);
 
   // 클릭 시 페이지 이동
-  const handleClick = (id: number, name: string | null) => {
+  const handleClick = (id: number) => {
     navigate(`/detail/${id}`);
   };
 

@@ -2,7 +2,8 @@ import { GroupedEvolution } from '../types/types';
 import { Box, Stack, Typography } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import EvolutionBox from './EvolutionBox';
-
+import { queries } from '../api/queries';
+import { queryClient } from '../api/queryClient';
 
 interface EvolutionListProps {
   evolutions: GroupedEvolution[]; 
@@ -14,6 +15,13 @@ function EvolutionArrow({ hasChildren }: { hasChildren: boolean }) {
 };
 
 function EvolutionList({ evolutions, handleClick }: EvolutionListProps) {
+  // 마우스가 Hover 될 때 prefetch
+  const handleHover = (id: number) => {
+    queryClient.prefetchQuery(queries.getPokemonDetailData(id));
+    queryClient.prefetchQuery(queries.getSpeicesByID(id));
+    queryClient.prefetchQuery(queries.getPreviousPokemon(id));
+    queryClient.prefetchQuery(queries.getNextPokemon(id));
+  };
 
   // 재귀함수
   const renderEvolutions = (pokemon: GroupedEvolution) => {
@@ -24,7 +32,7 @@ function EvolutionList({ evolutions, handleClick }: EvolutionListProps) {
       <Box key={id} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '3em' }}>
         {/* 부모 */}
         {id !== null && ( // id가 null이 아닐 때만 클릭 이벤트 연결
-          <EvolutionBox pokemon={pokemon} onClick={() => handleClick(id, name)} />
+          <EvolutionBox pokemon={pokemon} onClick={() => handleClick(id, name)} onMouseEnter={() => handleHover(id)} />
         )}
         
         {/* 1명 이상의 자식이 있으면 화살표 표시 */}

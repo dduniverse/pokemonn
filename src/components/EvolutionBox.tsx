@@ -5,9 +5,10 @@ import { GroupedEvolution } from '../types/types';
 interface EvolutionBoxProps {
   pokemon: GroupedEvolution;
   onClick: () => void;
+  onMouseEnter: () => void; // Hover 이벤트 핸들러 추가
 }
 
-function EvolutionBox({ pokemon, onClick }: EvolutionBoxProps) {
+function EvolutionBox({ pokemon, onClick, onMouseEnter }: EvolutionBoxProps) {
   return (
     <Box
       sx={{
@@ -28,6 +29,7 @@ function EvolutionBox({ pokemon, onClick }: EvolutionBoxProps) {
         cursor: 'pointer',
       }}
       onClick={onClick}
+      onMouseEnter={onMouseEnter} // Hover 이벤트 추가
     >
       <PokemonImage id={pokemon.id} name={pokemon.name} />
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>

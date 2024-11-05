@@ -3,12 +3,13 @@ import PokemonImage from "./PokemonImage";
 
 interface NavigationButtonProps {
   onClick: () => void; 
+  onMouseEnter: () => void
   disabled: boolean; 
   id: number; 
   name: string | null; 
 }
   
-const NavigationButton = ({ onClick, disabled, id, name }: NavigationButtonProps) => (
+const NavigationButton = ({ onClick, onMouseEnter, disabled, id, name }: NavigationButtonProps) => (
   <Button
     variant="contained"
     sx={{
@@ -19,6 +20,7 @@ const NavigationButton = ({ onClick, disabled, id, name }: NavigationButtonProps
       fontWeight: 'bold',
     }}
     onClick={onClick}
+    onMouseEnter={onMouseEnter}
     disabled={disabled}
     startIcon={name && <PokemonImage id={id} name={name} width={40} height={40} />}
   >

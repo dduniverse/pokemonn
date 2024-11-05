@@ -32,31 +32,13 @@ function Home() {
     setSelectedRegion,
   } = usePageStore();
 
-  // Region 데이터 Prefetch
-  useEffect(() => {
-    Object.entries(regionUrls).forEach(([region, regionUrl]) => {
-      queryClient.prefetchQuery(queries.getPrefetchedRegionData(region, regionUrl));
-    });
-  }, [queryClient]);
-
-  // All일 때 앞뒤 2페이지 prefetch
-  useEffect(() => {
-    if (selectedRegion === 'All') {
-      const startPage = Math.max(1, currentPage - 2);
-      const endPage = currentPage + 2;
-      for (let page = startPage; page <= endPage; page++) {
-        queryClient.prefetchQuery(queries.getPrefetchedAllData(selectedRegion, page, ITEMS_PER_PAGE));
-      }
-    }
-  }, [queryClient, currentPage, selectedRegion]);
-
   // 기본 데이터 요청
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isPending } = useQuery({
     ...queries.getPokemonData(selectedRegion, currentPage, ITEMS_PER_PAGE),
   });
 
   // 검색어로 포켓몬 검색
-  const { data: searchResult, error: searchError, isLoading: searchLoading } = useQuery({
+  const { data: searchResult, error: searchError } = useQuery({
     ...queries.getPokemonByName(searchQuery),
   });
 
@@ -116,6 +98,15 @@ function Home() {
     setFetchedPages(new Set());
   };
 
+  // 페이지 Hover 시 prefetch
+  const handlePageHover = (page: number) => {
+    if (selectedRegion === 'All') {
+      queryClient.prefetchQuery({
+        ...queries.getPrefetchedAllData(selectedRegion, page, ITEMS_PER_PAGE),
+      });
+    }
+  };
+
   const handlePageChange = (e: ChangeEvent<unknown>, page: number) => {
     setCurrentPage(page);
     if (scrollRef.current) {
@@ -133,11 +124,11 @@ function Home() {
       <List
         pokemonData={currentData as (PokemonEntry[] | Result[])}
         additionalData={searchQuery ? {} : additionalData}
-        isLoading={isLoading || searchLoading}
+        isLoading={isPending}
         error={error || searchError}
       />
       {totalPages > 1 && (
-        <Pagenation totalPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} />
+        <Pagenation totalPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} handlePageHover={handlePageHover} />
       )}
     </div>
   );

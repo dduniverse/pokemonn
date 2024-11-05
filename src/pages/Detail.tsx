@@ -23,18 +23,18 @@ function Detail() {
   const [nextPokemonName, setNextPokemonName] = useState<string | null>(null);
 
   // 포켓몬 상세 데이터 가져오기
-  const { data: pokemonData, error: pokemonError, isLoading: isPokemonLoading } = useQuery({
+  const { data: pokemonData, error: pokemonError, isPending: isPokemonPending } = useQuery({
     ...queries.getPokemonDetailData(selectedID)
   });
 
   // 종 데이터 가져오기
-  const { data: speciesResponse, error: speciesError, isLoading: isSpeciesLoading } = useQuery({
+  const { data: speciesResponse, error: speciesError, isPending: isSpeciesPending } = useQuery({
     ...queries.getSpecies(pokemonData?.species?.url ?? ''),
     enabled: !!pokemonData?.species?.url,
   });
 
   // 진화 데이터 가져오기
-  const { data: evolutionChain, error: evolutionError, isLoading: isEvolutionLoading } = useQuery({
+  const { data: evolutionChain, error: evolutionError, isPending: isEvolutionPending } = useQuery({
     ...queries.getEvolution(speciesResponse?.evolution_chain?.url ?? ''),
     enabled: !!speciesResponse?.evolution_chain?.url,
   });
@@ -65,10 +65,10 @@ function Detail() {
     navigate(`/detail/${id}`);
   };
 
-  const isLoading = isPokemonLoading || isSpeciesLoading || isEvolutionLoading;
+  const isPending = isPokemonPending || isSpeciesPending || isEvolutionPending;
   const hasError = pokemonError || speciesError || evolutionError;
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="flex flex-col p-8 gap-8">
         <Skeleton variant="rectangular" height={50} sx={{ marginBottom: 1 }} />

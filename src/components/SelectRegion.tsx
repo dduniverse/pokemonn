@@ -1,6 +1,8 @@
 import { useMediaQuery, useTheme, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { regionUrls } from '../utils/constants';
 import CustomLabel from './common/CustomLabel';
+import { useQueryClient } from '@tanstack/react-query';
+import { queries } from '../api/queries';
 
 interface SelectRegionProps {
   handleRegions: (e: SelectChangeEvent<string>) => void;
@@ -10,6 +12,16 @@ interface SelectRegionProps {
 function SelectRegion({ handleRegions, selectedRegion }: SelectRegionProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const queryClient = useQueryClient();
+
+  // 지역 Hover 시 prefetch
+  const handleRegionHover = (region: string) => {
+    const regionUrl = regionUrls[region];
+    queryClient.prefetchQuery({
+      queryKey: ['regionData', region],
+      queryFn: () => queries.getPrefetchedRegionData(region, regionUrl),
+    });
+  };
 
   return (
     <FormControl sx={{ width: '100%' }}>
@@ -23,7 +35,11 @@ function SelectRegion({ handleRegions, selectedRegion }: SelectRegionProps) {
           onChange={handleRegions}
         >
           {Object.keys(regionUrls).map((region) => (
-            <MenuItem key={region} value={region}>
+            <MenuItem 
+              key={region} 
+              value={region} 
+              onMouseEnter={() => handleRegionHover(region)}
+            >
               {region}
             </MenuItem>
           ))}
@@ -46,6 +62,7 @@ function SelectRegion({ handleRegions, selectedRegion }: SelectRegionProps) {
               key={region}
               value={region}
               control={<Radio sx={{ display: 'none' }} />}
+              onMouseEnter={() => handleRegionHover(region)}
               label={<CustomLabel region={region} selectedRegion={selectedRegion} />}
             />
           ))}

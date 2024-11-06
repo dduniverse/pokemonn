@@ -3,8 +3,8 @@ import { sortData } from './sortingUtils';
 
 interface ProcessedData {
   filteredData: CombinedPokemonType[];
-  sortedData: CombinedPokemonType[];
   currentData: CombinedPokemonType[];
+  totalPages: number;
 }
 
 // 타입 가드 함수 수정
@@ -45,25 +45,36 @@ export function getProcessedData(
   if (!data) {
     return {
       filteredData: [],
-      sortedData: [],
       currentData: [],
+      totalPages: 1,
     };
   }
 
   if (!isAllRegionData(data) && !isRegionSpecificData(data)) {
     return {
       filteredData: [data],
-      sortedData: [data],
       currentData: [data],
+      totalPages: 1,
     };
   }
 
+  // 검색어로 필터링된 데이터
   const filteredData = filterBySearchQuery(data, searchQuery, selectedRegion);
+  
+  // 정렬된 데이터
   const sortedData = sortData(filteredData, selectedSortOption, selectedRegion);
-  const currentData = 
-    selectedRegion === 'All' 
-      ? sortedData 
-      : sortedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  
+  // 페이지네이션된 데이터
+  const currentData = selectedRegion === 'All'
+    ? sortedData
+    : sortedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  return { filteredData, sortedData, currentData };
+  // 페이지 수 계산
+  const totalPages = searchQuery
+    ? 1 // 검색어가 있으면 1페이지로 고정
+    : isAllRegionData(data) && data.count 
+      ? Math.ceil(data.count / itemsPerPage)
+      : Math.ceil(sortedData.length / itemsPerPage);
+
+  return { filteredData, currentData, totalPages };
 }

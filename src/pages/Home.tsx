@@ -46,7 +46,7 @@ function Home() {
   });
 
   // 데이터 필터링, 정렬 및 페이지네이션 처리
-  const { currentData, sortedData } = getProcessedData(
+  const { currentData, totalPages } = getProcessedData(
     data,
     searchQuery,
     selectedSortOption,
@@ -68,20 +68,14 @@ function Home() {
     }
   });
 
-  // 페이지 수 계산
-  const hasCount = (data: any): data is { count: number } => data && 'count' in data;
-  const totalPages = searchQuery ? 1 // 검색어가 있을 때는 페이지를 1로 고정
-    : selectedRegion === 'All' && hasCount(data)
-    ? Math.ceil((data.count || 0) / ITEMS_PER_PAGE)
-    : Math.ceil(sortedData.length / ITEMS_PER_PAGE);
-
+  
   return (
     <div ref={scrollRef} className="flex flex-col p-8 gap-8">
       <Search handleSearchChange={handleSearchChange} />
-      <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+      <div className="w-full flex flex-row justify-between">
         <SelectRegion handleRegions={handleRegions} selectedRegion={selectedRegion} />
         <SortOptions selectedSortOption={selectedSortOption} handleSortOptions={handleSortOptions} />
-      </Box>
+      </div>
       <List
         pokemonData={currentData as (PokemonEntryType[] | ResultType[])}
         additionalData={searchQuery ? {} : additionalData}

@@ -1,8 +1,8 @@
 // sortingUtils.ts
-import { Result, PokemonEntry } from '../types/types';
+import { PokemonEntryType, ResultType } from '../types/schemas';
 import { getIdFromUrl } from './urlUtils';
 
-const sortPokemonData = (sortOption: string, data: Result[] | PokemonEntry[], region: string) => {
+const sortPokemonData = (sortOption: string, data: ResultType[] | PokemonEntryType[], region: string) => {
   if (region === 'All' && Array.isArray(data)) {
     const sortedResults = [...data].sort((a, b) => {
       if ('url' in a && 'url' in b) {
@@ -30,8 +30,8 @@ const sortPokemonData = (sortOption: string, data: Result[] | PokemonEntry[], re
 
   } else if (data && data.length > 0 && 'pokemon_species' in data[0]) {
     const sortedEntries = [...data].sort((a, b) => {
-      const aEntry = a as PokemonEntry;
-      const bEntry = b as PokemonEntry;
+      const aEntry = a as PokemonEntryType;
+      const bEntry = b as PokemonEntryType;
 
       const aId = getIdFromUrl(aEntry.pokemon_species.url);
       const bId = getIdFromUrl(bEntry.pokemon_species.url);
@@ -42,9 +42,9 @@ const sortPokemonData = (sortOption: string, data: Result[] | PokemonEntry[], re
         case 'Highest Number':
           return bId - aId;
         case 'A-Z':
-          return (a as PokemonEntry).pokemon_species.name.localeCompare((b as PokemonEntry).pokemon_species.name);
+          return (a as PokemonEntryType).pokemon_species.name.localeCompare((b as PokemonEntryType).pokemon_species.name);
         case 'Z-A':
-          return (b as PokemonEntry).pokemon_species.name.localeCompare((a as PokemonEntry).pokemon_species.name);
+          return (b as PokemonEntryType).pokemon_species.name.localeCompare((a as PokemonEntryType).pokemon_species.name);
         default:
           return 0;
       }
@@ -56,6 +56,6 @@ const sortPokemonData = (sortOption: string, data: Result[] | PokemonEntry[], re
 };
 
 
-export const sortData = (data: Result[] | PokemonEntry[], sortOption: string, region: string) => {
+export const sortData = (data: ResultType[] | PokemonEntryType[], sortOption: string, region: string) => {
   return sortPokemonData(sortOption, data, region);
 };

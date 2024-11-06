@@ -1,7 +1,7 @@
 import { fetchData } from './fetchData';
-import { EvolutionChainSchema, PokemonDetailSchema, PokemonListSchema, PokemonRegionListSchema, SpeciesDataSchema } from '../types/schemas';
+import { CombinedListSchema, EvolutionChainSchema, PokemonDetailSchema, PokemonListSchema, PokemonRegionListSchema, SpeciesDataSchema } from '../types/schemas';
 import { createPokemonUrl } from '../utils/urlUtils';
-import { regionUrls } from '../utils/constants';
+import { regionUrls } from '../constants/urls';
 
 
 // 기본 포켓몬 목록 요청
@@ -11,9 +11,10 @@ export const fetchPokemonData = async (region: string, page: number, itemsPerPag
     : regionUrls[region];
 
   const response = await fetchData(queryUrl);
-  return region === 'All' 
-    ? PokemonListSchema.parse(response)
-    : PokemonRegionListSchema.parse(response);
+  // return region === 'All' 
+  //   ? PokemonListSchema.parse(response)
+  //   : PokemonRegionListSchema.parse(response);
+  return CombinedListSchema.parse(response);
 };
 
 // 개별 포켓몬 데이터 요청

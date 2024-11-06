@@ -1,18 +1,26 @@
-import { Result, PokemonEntry } from '../types/types';
+import { CombinedListType, CombinedPokemonType, PokemonEntryType, PokemonListType, PokemonRegionListType, ResultType } from '../types/schemas';
 import { sortData } from './sortingUtils';
 
 interface ProcessedData {
-  filteredData: (Result | PokemonEntry)[];
-  sortedData: (Result | PokemonEntry)[];
-  currentData: (Result | PokemonEntry)[];
+  filteredData: CombinedPokemonType[];
+  sortedData: CombinedPokemonType[];
+  currentData: CombinedPokemonType[];
 }
 
-const isAllRegionData = (data: any): data is { results: Result[] } => data && 'results' in data;
-const isRegionSpecificData = (data: any): data is { pokemon_entries: PokemonEntry[] } => data && 'pokemon_entries' in data;
+// 타입 가드 함수 수정
+const isAllRegionData = (data: CombinedListType | undefined): data is PokemonListType => 
+  !!data && 'results' in data && Array.isArray(data.results);
 
+const isRegionSpecificData = (data: CombinedListType | undefined): data is PokemonRegionListType => 
+  !!data && 'pokemon_entries' in data && Array.isArray(data.pokemon_entries);
 
 // 검색어로 데이터 필터링하는 함수
-export function filterBySearchQuery(data: any, searchQuery: string, selectedRegion: string): (Result[] | PokemonEntry[]) {
+export function filterBySearchQuery(
+  data: CombinedListType | undefined, 
+  searchQuery: string, 
+  selectedRegion: string
+): ResultType[] | PokemonEntryType[] {
+  if (!data) return [];
   if (selectedRegion === 'All' && isAllRegionData(data)) {
     return data.results.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -25,35 +33,36 @@ export function filterBySearchQuery(data: any, searchQuery: string, selectedRegi
   return [];
 }
 
-
 // 데이터 처리 함수
 export function getProcessedData(
-  data: any,
+  data: CombinedListType | undefined,
   searchQuery: string,
   selectedSortOption: string,
   selectedRegion: string,
   currentPage: number,
   itemsPerPage: number
 ): ProcessedData {
-  // 개별 포켓몬 데이터일 경우
-  if (data && !isAllRegionData(data) && !isRegionSpecificData(data)) {
+  if (!data) {
     return {
-      filteredData: [data],
-      sortedData: [data],
-      currentData: [data], // 필터링 및 페이지네이션 없이 단일 개체를 반환
+      filteredData: [],
+      sortedData: [],
+      currentData: [],
     };
   }
 
-  // 검색 필터 적용
+  if (!isAllRegionData(data) && !isRegionSpecificData(data)) {
+    return {
+      filteredData: [data],
+      sortedData: [data],
+      currentData: [data],
+    };
+  }
+
   const filteredData = filterBySearchQuery(data, searchQuery, selectedRegion);
-
-  // 정렬
   const sortedData = sortData(filteredData, selectedSortOption, selectedRegion);
-
-  // 페이지네이션
-  const currentData =
-    selectedRegion === 'All'
-      ? sortedData
+  const currentData = 
+    selectedRegion === 'All' 
+      ? sortedData 
       : sortedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return { filteredData, sortedData, currentData };

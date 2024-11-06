@@ -12,7 +12,7 @@ import {
   fetchPokemonByName,
   fetchSpeciesDataByID,
 } from './fetchFunctions';
-import { PokemonEntry, Result } from '../types/types';
+import { PokemonEntryType, ResultType } from '../types/schemas';
 import { getIdFromUrl } from '../utils/urlUtils';
 
 
@@ -30,7 +30,7 @@ export const queries = {
       queryFn: () => fetchPokemonDetailData(pokemonId),
     }),
 
-  getMultiplePokemonDetails: (currentData: Array<Result | PokemonEntry>) =>
+  getMultiplePokemonDetails: (currentData: Array<ResultType | PokemonEntryType>) =>
     currentData.map((pokemon) => {
       const pokemonId = getIdFromUrl('pokemon_species' in pokemon ? pokemon.pokemon_species.url : pokemon.url);
       

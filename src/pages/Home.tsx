@@ -12,7 +12,7 @@ import { queries } from '../api/queries';
 import { homeHandlers } from '../handlers/homeHandlers';
 import { getProcessedData } from '../utils/dataProcessing';
 import { usePageStore } from '../store/usePageStore';
-import { PokemonEntry, Result } from '../types/types';
+import { PokemonDetailType, PokemonEntryType, ResultType } from '../types/schemas';
 
 
 const ITEMS_PER_PAGE = 20;
@@ -45,17 +45,9 @@ function Home() {
     ...queries.getPokemonData(selectedRegion, currentPage, ITEMS_PER_PAGE),
   });
 
-  // 검색어로 포켓몬 검색
-  const { data: searchResult, error: searchError } = useQuery({
-    ...queries.getPokemonByName(searchQuery),
-  });
-
-  // 검색어가 있을 경우 검색 결과를 사용하고, 그렇지 않을 경우 기본 데이터 사용
-  const displayData = searchQuery && searchResult ? searchResult : data;
-  
   // 데이터 필터링, 정렬 및 페이지네이션 처리
   const { currentData, sortedData } = getProcessedData(
-    displayData,
+    data,
     searchQuery,
     selectedSortOption,
     selectedRegion,
@@ -68,7 +60,7 @@ function Home() {
     queries: searchQuery ? [] : queries.getMultiplePokemonDetails(currentData),
   });
 
-  const additionalData: Record<string, any> = {};
+  const additionalData: Record<string, PokemonDetailType> = {};
   additionalDataQueries.forEach((query, index) => {
     const name = 'pokemon_species' in currentData[index] ? currentData[index].pokemon_species.name : currentData[index].name;
     if (query.data) {
@@ -91,10 +83,10 @@ function Home() {
         <SortOptions selectedSortOption={selectedSortOption} handleSortOptions={handleSortOptions} />
       </Box>
       <List
-        pokemonData={currentData as (PokemonEntry[] | Result[])}
+        pokemonData={currentData as (PokemonEntryType[] | ResultType[])}
         additionalData={searchQuery ? {} : additionalData}
         isLoading={isPending}
-        error={error || searchError}
+        error={error}
       />
       {totalPages > 1 && (
         <Pagenation totalPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} handlePageHover={handlePageHover} />

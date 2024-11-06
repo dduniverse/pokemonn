@@ -1,16 +1,24 @@
 import { z, ZodSchema } from "zod";
 
+export const ResultSchema = z.object({
+  name: z.string(),
+  url: z.string(),
+})
+
+export const PokemonEntrySchema = z.object({
+  entry_number: z.number(),
+  pokemon_species: z.object({
+    name: z.string(),
+    url: z.string().url(),
+  }),
+})
+
 // 포켓몬 ALL 데이터 리스트
 export const PokemonListSchema = z.object({
   count: z.number(),
   next: z.string().nullable(),
   previous: z.string().nullable(),
-  results: z.array(
-    z.object({
-      name: z.string(),
-      url: z.string(),
-    })
-  ),
+  results: z.array(ResultSchema),
 });
 
 // 포켓몬 region 데이터 리스트
@@ -32,13 +40,7 @@ export const PokemonRegionListSchema = z.object({
     }),
     name: z.string(),
   })),
-  pokemon_entries: z.array(z.object({
-    entry_number: z.number(),
-    pokemon_species: z.object({
-      name: z.string(),
-      url: z.string().url(),
-    }),
-  })),
+  pokemon_entries: z.array(PokemonEntrySchema),
   region: z.object({
     name: z.string(),
     url: z.string().url(),
@@ -120,3 +122,20 @@ export const EvolutionChainSchema: ZodSchema = z
   )
   .optional()
   .default({}); // 최상위 객체의 기본값을 빈 객체로 설정
+
+
+
+// 통합 Zod 스키마
+export const CombinedPokemonSchema = z.union([ResultSchema, PokemonEntrySchema])
+export const CombinedListSchema = z.union([PokemonListSchema, PokemonRegionListSchema]);
+
+// 스키마에서 타입 추출
+export type ResultType = z.infer<typeof ResultSchema>;
+export type PokemonEntryType = z.infer<typeof PokemonEntrySchema>;
+export type CombinedPokemonType = z.infer<typeof CombinedPokemonSchema>;
+
+export type PokemonDetailType = z.infer<typeof PokemonDetailSchema>;
+
+export type PokemonListType =  z.infer<typeof PokemonListSchema>;
+export type PokemonRegionListType = z.infer<typeof PokemonRegionListSchema>;
+export type CombinedListType = z.infer<typeof CombinedListSchema>;

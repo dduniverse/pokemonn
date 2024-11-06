@@ -1,5 +1,3 @@
-// constants.ts
-
 export const regionUrls: { [key: string]: string } = {
   // region별 pokedex url
   All: 'https://pokeapi.co/api/v2/pokemon',

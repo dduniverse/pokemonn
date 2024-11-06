@@ -1,5 +1,5 @@
 import { Chip, useTheme, useMediaQuery } from '@mui/material';
-import { typeColorMap } from '../../utils/colorUtils';
+import { typeColorMap } from '../../constants/colors';
 import { Type } from '../../types/types';
 
 interface TypeChipProps {

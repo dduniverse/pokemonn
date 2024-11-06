@@ -8,7 +8,7 @@ import Detail from './pages/Detail';
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 6em 2.2em 0 2.2em
+  margin: 0.5em 2.2em 0 2.2em
 `;
 
 

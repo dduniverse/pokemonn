@@ -1,5 +1,5 @@
 import { useMediaQuery, useTheme, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import { regionUrls } from '../utils/constants';
+import { regionUrls } from '../constants/urls';
 import CustomLabel from './common/CustomLabel';
 import { queryClient } from '../api/queryClient';
 import { queries } from '../api/queries';
@@ -16,10 +16,7 @@ function SelectRegion({ handleRegions, selectedRegion }: SelectRegionProps) {
   // 지역 Hover 시 prefetch
   const handleRegionHover = (region: string) => {
     const regionUrl = regionUrls[region];
-    queryClient.prefetchQuery({
-      queryKey: ['regionData', region],
-      queryFn: () => queries.getPrefetchedRegionData(region, regionUrl),
-    });
+    queryClient.prefetchQuery(queries.getPrefetchedRegionData(region, regionUrl));
   };
 
   return (

@@ -1,26 +1,18 @@
 import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { Typography, Skeleton } from '@mui/material';
 
-import PokemonInfo from '../components/PokemonInfo';
+import PokemonInfo from '../components/common/PokemonInfo';
 import EvolutionList from '../components/EvolutionList';
 import PokemonNavigation from '../components/PokemonNavigation';
+import PokemonImage from '../components/common/PokemonImage';
+import { LoadingSkeletonList } from '../components/common/LoadingSkeleton';
 
 import { GroupedEvolution } from '../types/types';
 import { extractEvolutionData } from '../utils/evolutionUtils';
 import { queries } from '../api/queries';
 import { usePokemonNavigationStore } from '../store/usePokemonNavigationStore';
 
-function LoadingSkeleton() {
-  return (
-    <div className="flex flex-col p-8 gap-8">
-      <Skeleton variant="rectangular" height={50} sx={{ marginBottom: 1 }} />
-      <Skeleton variant="rectangular" height={135} sx={{ marginBottom: 1 }} />
-      <Skeleton variant="rectangular" height={200} sx={{ marginBottom: 1 }} />
-    </div>
-  );
-}
 
 function Detail() {
   const { id } = useParams<{ id: string }>(); // URL에서 id 가져오기
@@ -68,11 +60,11 @@ function Detail() {
   const hasError = pokemonError || speciesError || evolutionError;
 
   if (isPending) {
-    return <LoadingSkeleton />;
+    return <LoadingSkeletonList />;
   }
 
   if (hasError || !pokemonData || !speciesResponse || !evolutionChain) {
-    return <Typography>Error fetching data.</Typography>;
+    return <p>Error fetching data.</p>;
   }
   
   const evolutions: GroupedEvolution[] = evolutionChain ? extractEvolutionData(evolutionChain) : [];
@@ -84,7 +76,10 @@ function Detail() {
         prevPokemonName={prevPokemonName}
         nextPokemonName={nextPokemonName}
       />
-      <PokemonInfo pokemonData={pokemonData} />
+      <div className="flex justify-center items-center bg-gray-200 gap-8 rounded-md p-4">
+        <PokemonImage id={pokemonData.id} name={pokemonData.name} />
+        <PokemonInfo pokemonData={pokemonData} />
+      </div>
       <EvolutionList evolutions={evolutions} />
     </div>
   );

@@ -1,77 +1,46 @@
-import { Box, ImageList, ImageListItem, Skeleton, Stack, useMediaQuery, useTheme } from '@mui/material';
+import { ImageList, ImageListItem, useMediaQuery, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getIdFromUrl } from '../utils/urlUtils';
-import { PokemonDetail, PokemonEntry, Result } from '../types/types';
-import TypeChip from './common/TypeChip';
-import StatBox from './common/StatBox';
 import PokemonImage from './common/PokemonImage';
+import PokemonInfo from './common/PokemonInfo';
+import { LoadingSkeletonCard } from './common/LoadingSkeleton';
+import { ErrorDisplay } from './common/ErrorDisplay';
+import { PokemonDetailType, PokemonEntryType, ResultType } from '../types/schemas';
 
 interface PropsList {
-  pokemonData: PokemonEntry[] | Result[] | PokemonDetail[];
-  additionalData: Record<string, PokemonDetail>;
+  pokemonData: PokemonEntryType[] | ResultType[];
+  additionalData: Record<string, PokemonDetailType>;
   isLoading: boolean;
   error: Error | unknown;
 }
 
-const PokemonInfo = ({ id, name, types, height, weight, isXs }: any) => (
-  <Box>
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0.5em', justifyContent: 'center', paddingBottom: '0.6em' }}>
-      {types.map((type: any) => (
-        <TypeChip key={type.type.name} type={type} />
-      ))}
-    </Box>
-    <Stack direction="row" spacing={1} sx={{ paddingBottom: '0.6em', fontSize: isXs ? '0.6em' : '1em' }}>
-      <StatBox label="Height" value={`${height / 10}m`} />
-      <StatBox label="Weight" value={`${weight / 10}kg`} />
-    </Stack>
-  </Box>
-);
-
 function List({ pokemonData, additionalData, isLoading, error }: PropsList) {
+  const navigate = useNavigate();
+
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down('sm'));
   const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-  const navigate = useNavigate();
   const cols = isXs ? 2 : isSm ? 3 : 4;
 
-  const handleClick = (id: number) => {
-    navigate(`/detail/${id}`);
+  const handleClick = (id: number) => navigate(`/detail/${id}`);
+  
+  const getPokemonIdAndName = (data: PokemonEntryType | ResultType): { id: number; name: string } => {
+    const isRegionData = 'pokemon_species' in data;
+    const id = 'id' in data ? Number(data.id) : Number(getIdFromUrl(isRegionData ? data.pokemon_species.url : data.url));
+    const name = isRegionData ? data.pokemon_species.name : data.name;
+    return { id, name };
   };
 
-  const hasId = (obj: any): obj is { id: number } => typeof obj.id === 'number';
 
-  if (isLoading) {
-    return (
-      <ImageList cols={cols} rowHeight="auto" sx={{ overflow: 'hidden', padding: '1em' }}>
-        {[...Array(8)].map((_, index) => (
-          <ImageListItem key={index}>
-            <Skeleton variant="rectangular" height={170} sx={{ borderRadius: '12px', marginBottom: 1 }} />
-          </ImageListItem>
-        ))}
-      </ImageList>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
-        <img src="/No data.jpg" alt="No data founded" style={{ width: '200px', height: 'auto' }} />
-        <p>일치하는 검색 결과가 없습니다.</p>
-        <p>검색어를 확인해주세요.</p>
-      </Box>
-    );
-  }
+  if (isLoading) return <LoadingSkeletonCard cols={cols} />;
+  if (error) return <ErrorDisplay />;
 
   return (
     <ImageList cols={cols} rowHeight="auto" sx={{ overflow: 'hidden', padding: '1em' }}>
       {pokemonData.map((data) => {
-        const isRegionData = 'pokemon_species' in data;
-        const id = hasId(data) ? data.id : getIdFromUrl(isRegionData ? data.pokemon_species.url : data.url);
-        const name = isRegionData ? data.pokemon_species.name : data.name;
+        const { id, name } = getPokemonIdAndName(data);
         const additionalInfo = additionalData[name.toLowerCase()];
-        const types = additionalInfo ? additionalInfo.types : ('types' in data ? data.types : []);
-        const height = additionalInfo ? additionalInfo.height : ('height' in data ? data.height: '');
-        const weight = additionalInfo ? additionalInfo.weight : ('weight' in data? data.weight: '');
+        const types = additionalInfo && 'types' in additionalInfo ? additionalInfo.types : [];
 
         return (
           <ImageListItem
@@ -94,13 +63,13 @@ function List({ pokemonData, additionalData, isLoading, error }: PropsList) {
             }}
             onClick={() => handleClick(id)}
           >
-            <Box component="span" sx={{ paddingTop: '0.6em', fontSize: isXs ? '0.6em' : '1em' }}>
-              No. <Box component="span" sx={{ fontWeight: 'bold', fontSize: '1em' }}>{id}</Box>
-            </Box>
+             <div className="pt-2 text-xs md:text-base">
+              No.  <span className="font-bold text-base">{id}</span>
+            </div>
             <PokemonImage id={id} name={name} width={isXs ? 60 : 100} height={isXs ? 60 : 100} />
-            <Box component="span" sx={{ fontSize: isXs ? '0.8em' : '1.2em', fontWeight: 'bold', paddingBottom: '0.6em' }}>{name}</Box>
+            <span className="text-sm md:text-lg font-bold pb-2">{name}</span>
             {types.length > 0 && (
-              <PokemonInfo id={id} name={name} types={types} height={height} weight={weight} isXs={isXs} />
+              <PokemonInfo pokemonData={additionalInfo} />
             )}
           </ImageListItem>
         );

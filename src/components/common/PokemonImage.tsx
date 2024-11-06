@@ -7,7 +7,7 @@ interface PokemonImageProps {
   height?: string | number; 
 }
 
-function PokemonImage({ id, name, width = 'auto', height = 'auto' }: PokemonImageProps) {
+function PokemonImage({ id, name, width, height }: PokemonImageProps) {
   return (
     <Box
       component="img"

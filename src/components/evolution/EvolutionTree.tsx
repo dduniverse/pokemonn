@@ -1,6 +1,6 @@
 import { ArrowForward as ArrowForwardIcon } from '@mui/icons-material';
 import EvolutionBox from './EvolutionBox';
-import { GroupedEvolution } from '../types/types';
+import { GroupedEvolution } from '../../types/types';
 
 interface EvolutionTreeProps {
   evolution: GroupedEvolution;

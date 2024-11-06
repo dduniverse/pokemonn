@@ -1,5 +1,5 @@
-import NavigationButton from './common/NavigationButton';
-import { Pokemon } from '../types/types';
+import NavigationButton from './PokemonNaviButton';
+import { Pokemon } from '../../types/types';
 
 interface PokemonNavigationProps {
   pokemonData: Pokemon;

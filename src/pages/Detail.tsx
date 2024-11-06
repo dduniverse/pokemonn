@@ -3,8 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
 import PokemonInfo from '../components/common/PokemonInfo';
-import EvolutionList from '../components/EvolutionList';
-import PokemonNavigation from '../components/PokemonNavigation';
+import EvolutionList from '../components/evolution/EvolutionList';
+import PokemonNavigation from '../components/navigation/PokemonNavigation';
 import PokemonImage from '../components/common/PokemonImage';
 import { LoadingSkeletonList } from '../components/common/LoadingSkeleton';
 

@@ -1,7 +1,7 @@
-import PokemonImage from './common/PokemonImage'; 
-import { GroupedEvolution } from '../types/types'; 
+import PokemonImage from '../common/PokemonImage'; 
+import { GroupedEvolution } from '../../types/types'; 
 import { useNavigate } from 'react-router-dom';
-import { usePokemonPrefetch } from '../hooks/usePokemonPrefetch';
+import { usePokemonPrefetch } from '../../hooks/usePokemonPrefetch';
 
 interface EvolutionBoxProps {
   pokemon: GroupedEvolution;

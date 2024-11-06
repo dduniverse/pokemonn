@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import PokemonImage from "./PokemonImage";
+import PokemonImage from "../common/PokemonImage";
 import { useNavigate } from "react-router-dom";
 import { usePokemonPrefetch } from "../../hooks/usePokemonPrefetch";
 

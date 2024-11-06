@@ -5,7 +5,7 @@ import TypeChip from './common/TypeChip';
 import StatBox from './common/StatBox';
 
 
-const PokemonInfo = ({ pokemonData, selectedRegion }: { pokemonData: any, selectedRegion: string }) => (
+const PokemonInfo = ({ pokemonData }: { pokemonData: any }) => (
   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#E9E9E9', gap: '2em', borderRadius: '5px', padding: '1em'}}>
     <PokemonImage id={pokemonData.id} name={pokemonData.name} />
     <Stack sx={{ alignItems: 'center', gap: '0.5em' }}>

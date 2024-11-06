@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Skeleton } from '@mui/material';
@@ -9,15 +9,23 @@ import PokemonNavigation from '../components/PokemonNavigation';
 
 import { GroupedEvolution } from '../types/types';
 import { extractEvolutionData } from '../utils/evolutionUtils';
-import { usePageStore } from '../store/usePageStore';
 import { queries } from '../api/queries';
 import { usePokemonNavigationStore } from '../store/usePokemonNavigationStore';
+
+function LoadingSkeleton() {
+  return (
+    <div className="flex flex-col p-8 gap-8">
+      <Skeleton variant="rectangular" height={50} sx={{ marginBottom: 1 }} />
+      <Skeleton variant="rectangular" height={135} sx={{ marginBottom: 1 }} />
+      <Skeleton variant="rectangular" height={200} sx={{ marginBottom: 1 }} />
+    </div>
+  );
+}
 
 function Detail() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>(); // URL에서 id 가져오기
   const pokemonID = Number(id); // number로 변환
-  const { selectedRegion } = usePageStore();
 
   const { setPrevPokemonName, setNextPokemonName, prevPokemonName, nextPokemonName } = usePokemonNavigationStore();
 
@@ -66,13 +74,7 @@ function Detail() {
   const hasError = pokemonError || speciesError || evolutionError;
 
   if (isPending) {
-    return (
-      <div className="flex flex-col p-8 gap-8">
-        <Skeleton variant="rectangular" height={50} sx={{ marginBottom: 1 }} />
-        <Skeleton variant="rectangular" height={135} sx={{ marginBottom: 1 }} />
-        <Skeleton variant="rectangular" height={200} sx={{ marginBottom: 1 }} />
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
 
   if (hasError || !pokemonData || !speciesResponse || !evolutionChain) {
@@ -89,7 +91,7 @@ function Detail() {
         nextPokemonName={nextPokemonName}
         handleClick={handleClick}
       />
-      <PokemonInfo pokemonData={pokemonData} selectedRegion={selectedRegion} />
+      <PokemonInfo pokemonData={pokemonData} />
       <EvolutionList evolutions={evolutions} handleClick={handleClick} />
     </div>
   );

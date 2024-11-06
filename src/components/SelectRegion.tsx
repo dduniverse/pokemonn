@@ -1,7 +1,7 @@
 import { useMediaQuery, useTheme, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { regionUrls } from '../utils/constants';
 import CustomLabel from './common/CustomLabel';
-import { useQueryClient } from '@tanstack/react-query';
+import { queryClient } from '../api/queryClient';
 import { queries } from '../api/queries';
 
 interface SelectRegionProps {
@@ -12,7 +12,6 @@ interface SelectRegionProps {
 function SelectRegion({ handleRegions, selectedRegion }: SelectRegionProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const queryClient = useQueryClient();
 
   // 지역 Hover 시 prefetch
   const handleRegionHover = (region: string) => {

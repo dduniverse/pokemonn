@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { Box, SelectChangeEvent } from '@mui/material';
-import { useQuery, useQueries, useQueryClient } from '@tanstack/react-query';
+import React, { useRef, useState } from 'react';
+import { Box } from '@mui/material';
+import { useQuery, useQueries } from '@tanstack/react-query';
 
 import Search from '../components/Search';
 import List from '../components/List';
@@ -18,7 +18,6 @@ import { PokemonEntry, Result } from '../types/types';
 const ITEMS_PER_PAGE = 20;
 
 function Home() {
-  const queryClient = useQueryClient();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [fetchedPages, setFetchedPages] = useState<Set<number>>(new Set());

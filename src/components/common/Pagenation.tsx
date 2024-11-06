@@ -1,4 +1,4 @@
-import { Box, Pagination, PaginationItem, useMediaQuery, useTheme } from "@mui/material";
+import { Pagination, PaginationItem, useMediaQuery, useTheme } from "@mui/material";
 import { ChangeEvent } from "react";
 
 interface PagenationProps {
@@ -13,28 +13,21 @@ function Pagenation({ totalPages, currentPage, handlePageChange, handlePageHover
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: isSmallScreen ? 'flex-start' : 'center',
-        marginBottom: isSmallScreen ? '2em' : '6em',
-        padding: isSmallScreen ? '0 1em' : '0'
-      }}
-    >
+    <div className={`flex ${isSmallScreen ? 'justify-start mb-8 px-4' : 'justify-center mb-24'}`} >
       <Pagination
-        count={totalPages}       // 전체 페이지 수
-        page={currentPage}        // 현재 페이지 번호
-        onChange={handlePageChange} // 페이지 변경 핸들러
+        count={totalPages}
+        page={currentPage}
+        onChange={handlePageChange}
         color="primary"
-        size={isSmallScreen ? 'small' : 'large'} // 화면 크기에 따른 크기 설정
+        size={isSmallScreen ? 'small' : 'large'}
         renderItem={(item) => (
           <PaginationItem
             {...item}
-            onMouseEnter={() => item.page !== null && handlePageHover(item.page)} // Hover 시 prefetch 실행
+            onMouseEnter={() => item.page !== null && handlePageHover(item.page)}
           />
         )}
       />
-    </Box>
+    </div>
   );
 }
 

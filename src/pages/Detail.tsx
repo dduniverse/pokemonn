@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Typography, Skeleton } from '@mui/material';
 
 import PokemonInfo from '../components/PokemonInfo';
@@ -23,7 +23,6 @@ function LoadingSkeleton() {
 }
 
 function Detail() {
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>(); // URL에서 id 가져오기
   const pokemonID = Number(id); // number로 변환
 
@@ -65,11 +64,6 @@ function Detail() {
     setNextPokemonName(nextPokemonData ? nextPokemonData.name : null);
   }, [nextPokemonData]);
 
-  // 클릭 시 페이지 이동
-  const handleClick = (id: number) => {
-    navigate(`/detail/${id}`);
-  };
-
   const isPending = isPokemonPending || isSpeciesPending || isEvolutionPending;
   const hasError = pokemonError || speciesError || evolutionError;
 
@@ -89,10 +83,9 @@ function Detail() {
         pokemonData={pokemonData}
         prevPokemonName={prevPokemonName}
         nextPokemonName={nextPokemonName}
-        handleClick={handleClick}
       />
       <PokemonInfo pokemonData={pokemonData} />
-      <EvolutionList evolutions={evolutions} handleClick={handleClick} />
+      <EvolutionList evolutions={evolutions} />
     </div>
   );
 }

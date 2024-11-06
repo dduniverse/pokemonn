@@ -15,7 +15,7 @@ interface HandlersProps {
   scrollRef: React.RefObject<HTMLDivElement>;
 }
 
-export const createHandlers = ({setSelectedSortOption, setCurrentPage, setSelectedRegion, setSearchQuery, setFetchedPages, selectedRegion, scrollRef}: HandlersProps) => ({
+export const homeHandlers = ({setSelectedSortOption, setCurrentPage, setSelectedRegion, setSearchQuery, setFetchedPages, selectedRegion, scrollRef}: HandlersProps) => ({
   handleSortOptions: (e: SelectChangeEvent<string>) => {
     setSelectedSortOption(e.target.value);
     setCurrentPage(1);

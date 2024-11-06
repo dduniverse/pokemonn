@@ -1,47 +1,30 @@
-import { Stack, Typography } from '@mui/material';
 import NavigationButton from './common/NavigationButton';
 import { Pokemon } from '../types/types';
-import { queryClient } from '../api/queryClient';
-import { queries } from '../api/queries';
-
 
 interface PokemonNavigationProps {
   pokemonData: Pokemon;
   prevPokemonName: string | null;
   nextPokemonName: string | null;
-  handleClick: (id: number, name: string | null) => void;
 }
 
-function PokemonNavigation({pokemonData, prevPokemonName, nextPokemonName, handleClick}: PokemonNavigationProps) {
-  // 마우스가 Hover 될 때 prefetch
-  const handleHover = (id: number) => {
-    queryClient.prefetchQuery(queries.getPokemonDetailData(id));
-    queryClient.prefetchQuery(queries.getSpeicesByID(id));
-    queryClient.prefetchQuery(queries.getPreviousPokemon(id));
-    queryClient.prefetchQuery(queries.getNextPokemon(id));
-  };
-
+function PokemonNavigation({ pokemonData, prevPokemonName, nextPokemonName }: PokemonNavigationProps) {
   return (
-    <Stack direction="row" alignItems="center" justifyContent="space-between">
+    <div className="flex flex-row items-center justify-between">
       <NavigationButton
-        onClick={() => handleClick(pokemonData.id - 1, prevPokemonName)} 
-        onMouseEnter={() => handleHover(pokemonData.id - 1)}
         disabled={!prevPokemonName}
         id={pokemonData.id - 1}
         name={prevPokemonName}
       />
-      <Typography variant="h4" sx={{ fontWeight: 600 }}>
+      <p className="text-3xl font-bold">
         {pokemonData.name} No. {pokemonData.id}
-      </Typography>
+      </p>
       <NavigationButton
-        onClick={() => handleClick(pokemonData.id + 1, nextPokemonName)} 
-        onMouseEnter={() => handleHover(pokemonData.id + 1)}
         disabled={!nextPokemonName}
         id={pokemonData.id + 1}
         name={nextPokemonName}
       />
-    </Stack>
+    </div>
   );
-};
+}
 
 export default PokemonNavigation;

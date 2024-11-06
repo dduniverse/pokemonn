@@ -1,19 +1,18 @@
-import { AppBar, Toolbar } from '@mui/material';
 import { Link } from 'react-router-dom'; 
 
 function Header() {
   return (
-    <AppBar component="nav" sx={{ bgcolor: '#FFC300' }}>
-      <Toolbar>
-        <Link to="/" style={{ textDecoration: 'none' }}>
+    <div className="bg-yellow-400">
+      <div className="flex items-center p-4">
+        <Link to="/" className="no-underline">
           <img
-              src="/logo.svg"
-              alt="Logo"
-              style={{ width: '6em', height: 'auto' }} 
+            src="/logo.svg"
+            alt="Logo"
+            className="w-24 h-auto"  // Tailwind로 로고 크기 설정
           />
         </Link>
-      </Toolbar>
-    </AppBar>
+      </div>
+    </div>
   );
 }
 

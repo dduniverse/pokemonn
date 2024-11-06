@@ -9,7 +9,7 @@ import SelectRegion from '../components/SelectRegion';
 import Pagenation from '../components/common/Pagenation';
 
 import { queries } from '../api/queries';
-import { createHandlers } from '../utils/handlers';
+import { homeHandlers } from '../handlers/homeHandlers';
 import { getProcessedData } from '../utils/dataProcessing';
 import { usePageStore } from '../store/usePageStore';
 import { PokemonEntry, Result } from '../types/types';
@@ -38,7 +38,7 @@ function Home() {
     handleSearchChange, 
     handlePageHover, 
     handlePageChange 
-  } = createHandlers({setSelectedSortOption, setCurrentPage, setSelectedRegion, setSearchQuery, setFetchedPages, selectedRegion, scrollRef});
+  } = homeHandlers({setSelectedSortOption, setCurrentPage, setSelectedRegion, setSearchQuery, setFetchedPages, selectedRegion, scrollRef});
 
   // 기본 데이터 요청
   const { data, error, isPending } = useQuery({

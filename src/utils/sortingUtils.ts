@@ -1,8 +1,8 @@
 // sortingUtils.ts
-import { PokemonEntryType, ResultType } from '../types/schemas';
+import { PokemonEntryType, CombinedPokemonType } from '../types/schemas';
 import { getIdFromUrl } from './urlUtils';
 
-const sortPokemonData = (sortOption: string, data: ResultType[] | PokemonEntryType[], region: string) => {
+const sortPokemonData = (sortOption: string, data: CombinedPokemonType[], region: string) => {
   if (region === 'All' && Array.isArray(data)) {
     const sortedResults = [...data].sort((a, b) => {
       if ('url' in a && 'url' in b) {
@@ -51,11 +51,10 @@ const sortPokemonData = (sortOption: string, data: ResultType[] | PokemonEntryTy
     });
     return sortedEntries;
   }
-  console.warn('No valid data to sort');
   return [];
 };
 
 
-export const sortData = (data: ResultType[] | PokemonEntryType[], sortOption: string, region: string) => {
+export const sortData = (data: CombinedPokemonType[], sortOption: string, region: string) => {
   return sortPokemonData(sortOption, data, region);
 };

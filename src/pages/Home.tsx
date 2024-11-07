@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { Box } from '@mui/material';
 import { useQuery, useQueries } from '@tanstack/react-query';
 
 import Search from '../components/Search';
@@ -12,7 +11,7 @@ import { queries } from '../api/queries';
 import { homeHandlers } from '../handlers/homeHandlers';
 import { getProcessedData } from '../utils/dataProcessing';
 import { usePageStore } from '../store/usePageStore';
-import { PokemonDetailType, PokemonEntryType, ResultType } from '../types/schemas';
+import { CombinedPokemonType, PokemonDetailType } from '../types/schemas';
 
 
 const ITEMS_PER_PAGE = 20;
@@ -45,6 +44,11 @@ function Home() {
     ...queries.getPokemonData(selectedRegion, currentPage, ITEMS_PER_PAGE),
   });
 
+  // 검색 쿼리
+  const { data: searchData, error: searchError, isPending: searchPending } = useQuery({
+    ...queries.getPokemonByName(searchQuery),
+  });
+
   // 데이터 필터링, 정렬 및 페이지네이션 처리
   const { currentData, totalPages } = getProcessedData(
     data,
@@ -57,7 +61,7 @@ function Home() {
 
   // 추가 정보 데이터 요청
   const additionalDataQueries = useQueries({
-    queries: searchQuery ? [] : queries.getMultiplePokemonDetails(currentData),
+    queries: queries.getMultiplePokemonDetails(currentData),
   });
 
   const additionalData: Record<string, PokemonDetailType> = {};
@@ -68,6 +72,9 @@ function Home() {
     }
   });
 
+  // List 컴포넌트에 전달할 데이터 설정
+  const isLoading = searchQuery ? searchPending : isPending;
+  const hasError = searchQuery ? searchError : error;
   
   return (
     <div ref={scrollRef} className="flex flex-col p-8 gap-8">
@@ -77,10 +84,10 @@ function Home() {
         <SortOptions selectedSortOption={selectedSortOption} handleSortOptions={handleSortOptions} />
       </div>
       <List
-        pokemonData={currentData as (PokemonEntryType[] | ResultType[])}
-        additionalData={searchQuery ? {} : additionalData}
-        isLoading={isPending}
-        error={error}
+        pokemonData={currentData as (CombinedPokemonType[])}
+        additionalData={additionalData}
+        isLoading={isLoading}
+        error={hasError}
       />
       {totalPages > 1 && (
         <Pagenation totalPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} handlePageHover={handlePageHover} />

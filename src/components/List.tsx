@@ -1,14 +1,14 @@
 import { ImageList, ImageListItem, useMediaQuery, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { getIdFromUrl } from '../utils/urlUtils';
 import PokemonImage from './common/PokemonImage';
 import PokemonInfo from './common/PokemonInfo';
 import { LoadingSkeletonCard } from './common/LoadingSkeleton';
 import { ErrorDisplay } from './common/ErrorDisplay';
-import { PokemonDetailType, PokemonEntryType, ResultType } from '../types/schemas';
+import { CombinedPokemonType, PokemonDetailType } from '../types/schemas';
+import { getPokemonIdAndName } from '../utils/getPokemonIdAndName';
 
 interface PropsList {
-  pokemonData: PokemonEntryType[] | ResultType[];
+  pokemonData: CombinedPokemonType[];
   additionalData: Record<string, PokemonDetailType>;
   isLoading: boolean;
   error: Error | unknown;
@@ -16,21 +16,12 @@ interface PropsList {
 
 function List({ pokemonData, additionalData, isLoading, error }: PropsList) {
   const navigate = useNavigate();
+  const handleClick = (id: number) => navigate(`/detail/${id}`);
 
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down('sm'));
   const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const cols = isXs ? 2 : isSm ? 3 : 4;
-
-  const handleClick = (id: number) => navigate(`/detail/${id}`);
-  
-  const getPokemonIdAndName = (data: PokemonEntryType | ResultType): { id: number; name: string } => {
-    const isRegionData = 'pokemon_species' in data;
-    const id = 'id' in data ? Number(data.id) : Number(getIdFromUrl(isRegionData ? data.pokemon_species.url : data.url));
-    const name = isRegionData ? data.pokemon_species.name : data.name;
-    return { id, name };
-  };
-
 
   if (isLoading) return <LoadingSkeletonCard cols={cols} />;
   if (error) return <ErrorDisplay />;

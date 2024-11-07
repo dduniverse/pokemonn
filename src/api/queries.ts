@@ -12,8 +12,8 @@ import {
   fetchPokemonByName,
   fetchSpeciesDataByID,
 } from './fetchFunctions';
-import { PokemonEntryType, ResultType } from '../types/schemas';
-import { getIdFromUrl } from '../utils/urlUtils';
+import { CombinedPokemonType } from '../types/schemas';
+import { getPokemonIdAndName } from '../utils/getPokemonIdAndName';
 
 
 export const queries = {
@@ -30,13 +30,13 @@ export const queries = {
       queryFn: () => fetchPokemonDetailData(pokemonId),
     }),
 
-  getMultiplePokemonDetails: (currentData: Array<ResultType | PokemonEntryType>) =>
+  getMultiplePokemonDetails: (currentData: Array<CombinedPokemonType>) =>
     currentData.map((pokemon) => {
-      const pokemonId = getIdFromUrl('pokemon_species' in pokemon ? pokemon.pokemon_species.url : pokemon.url);
+      const { id } = getPokemonIdAndName(pokemon); 
       
       return queryOptions ({
-        queryKey: ['pokemonDetail', pokemonId],
-        queryFn: () => fetchMultiplePokemonDetails(pokemonId),
+        queryKey: ['pokemonDetail', id],
+        queryFn: () => fetchMultiplePokemonDetails(id),
       })
     }),
 

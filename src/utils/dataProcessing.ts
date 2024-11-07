@@ -7,7 +7,7 @@ interface ProcessedData {
   totalPages: number;
 }
 
-// 타입 가드 함수 수정
+// 타입 가드 함수
 const isAllRegionData = (data: CombinedListType | undefined): data is PokemonListType => 
   !!data && 'results' in data && Array.isArray(data.results);
 
@@ -15,7 +15,7 @@ const isRegionSpecificData = (data: CombinedListType | undefined): data is Pokem
   !!data && 'pokemon_entries' in data && Array.isArray(data.pokemon_entries);
 
 // 검색어로 데이터 필터링하는 함수
-export function filterBySearchQuery(
+function filterBySearchQuery(
   data: CombinedListType | undefined, 
   searchQuery: string, 
   selectedRegion: string

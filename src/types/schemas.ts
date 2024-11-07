@@ -126,15 +126,14 @@ export const EvolutionChainSchema: ZodSchema = z
 
 
 // 통합 Zod 스키마
-export const CombinedPokemonSchema = z.union([ResultSchema, PokemonEntrySchema])
+export const CombinedPokemonSchema = z.union([ResultSchema, PokemonEntrySchema, PokemonDetailSchema])
 export const CombinedListSchema = z.union([PokemonListSchema, PokemonRegionListSchema]);
 
 // 스키마에서 타입 추출
 export type ResultType = z.infer<typeof ResultSchema>;
 export type PokemonEntryType = z.infer<typeof PokemonEntrySchema>;
-export type CombinedPokemonType = z.infer<typeof CombinedPokemonSchema>;
-
 export type PokemonDetailType = z.infer<typeof PokemonDetailSchema>;
+export type CombinedPokemonType = z.infer<typeof CombinedPokemonSchema>;
 
 export type PokemonListType =  z.infer<typeof PokemonListSchema>;
 export type PokemonRegionListType = z.infer<typeof PokemonRegionListSchema>;

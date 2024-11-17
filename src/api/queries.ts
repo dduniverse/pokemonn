@@ -56,6 +56,7 @@ export const queries = {
     queryOptions({
       queryKey: ['speciesData', speciesUrl],
       queryFn: () => fetchSpeciesData(speciesUrl),
+      enabled: !!speciesUrl,
     }),
 
   getSpeicesByID: (pokemonId: number) =>
@@ -68,6 +69,7 @@ export const queries = {
     queryOptions({
       queryKey: ['evolutionData', evolutionUrl],
       queryFn: () => fetchEvolutionData(evolutionUrl),
+      enabled: !!evolutionUrl,
     }),
 
   getPreviousPokemon: (pokemonId: number) =>

@@ -21,31 +21,15 @@ function Detail() {
   const { setPrevPokemonName, setNextPokemonName, prevPokemonName, nextPokemonName } = usePokemonNavigationStore();
 
   // 포켓몬 상세 데이터 가져오기
-  const { data: pokemonData, error: pokemonError, isPending: isPokemonPending } = useQuery({
-    ...queries.getPokemonDetailData(pokemonID)
-  });
-
+  const { data: pokemonData, error: pokemonError, isPending: isPokemonPending } = useQuery(queries.getPokemonDetailData(pokemonID));
   // 종 데이터 가져오기
-  const { data: speciesResponse, error: speciesError, isPending: isSpeciesPending } = useQuery({
-    ...queries.getSpecies(pokemonData?.species?.url ?? ''),
-    enabled: !!pokemonData?.species?.url,
-  });
-
+  const { data: speciesResponse, error: speciesError, isPending: isSpeciesPending } = useQuery(queries.getSpecies(pokemonData?.species?.url ?? ''),);
   // 진화 데이터 가져오기
-  const { data: evolutionChain, error: evolutionError, isPending: isEvolutionPending } = useQuery({
-    ...queries.getEvolution(speciesResponse?.evolution_chain?.url ?? ''),
-    enabled: !!speciesResponse?.evolution_chain?.url,
-  });
-
+  const { data: evolutionChain, error: evolutionError, isPending: isEvolutionPending } = useQuery(queries.getEvolution(speciesResponse?.evolution_chain?.url ?? ''));
   // 이전 포켓몬 데이터 가져오기
-  const { data: prevPokemonData } = useQuery({
-    ...queries.getPreviousPokemon(pokemonData?.id ?? 1)
-  });
-
+  const { data: prevPokemonData } = useQuery(queries.getPreviousPokemon(pokemonData?.id ?? 1));
   // 다음 포켓몬 데이터 가져오기
-  const { data: nextPokemonData } = useQuery({
-    ...queries.getNextPokemon(pokemonData?.id ?? 1)
-  });
+  const { data: nextPokemonData } = useQuery(queries.getNextPokemon(pokemonData?.id ?? 1));
 
   // prevPokemonData와 nextPokemonData가 로드되면 이름을 설정
   useEffect(() => {

@@ -10,16 +10,14 @@ interface HandlersProps {
   setCurrentPage: (page: number) => void;
   setSelectedRegion: (region: string) => void;      
   setSearchQuery: Dispatch<SetStateAction<string>>; 
-  setFetchedPages: Dispatch<SetStateAction<Set<number>>>; 
   selectedRegion: string;
   scrollRef: React.RefObject<HTMLDivElement>;
 }
 
-export const homeHandlers = ({setSelectedSortOption, setCurrentPage, setSelectedRegion, setSearchQuery, setFetchedPages, selectedRegion, scrollRef}: HandlersProps) => ({
+export const useHomeHandlers = ({setSelectedSortOption, setCurrentPage, setSelectedRegion, setSearchQuery, selectedRegion, scrollRef}: HandlersProps) => ({
   handleSortOptions: (e: SelectChangeEvent<string>) => {
     setSelectedSortOption(e.target.value);
     setCurrentPage(1);
-    setFetchedPages(new Set());
   },
 
   handleRegions: (e: SelectChangeEvent<string>) => {
@@ -27,14 +25,12 @@ export const homeHandlers = ({setSelectedSortOption, setCurrentPage, setSelected
     setSelectedRegion(newRegion);
     setSelectedSortOption('Lowest Number');
     setCurrentPage(1);
-    setFetchedPages(new Set());
   },
 
   handleSearchChange: (query: string) => {
     setSearchQuery(query);
     setSelectedRegion('All');
     setCurrentPage(1);
-    setFetchedPages(new Set());
   },
 
   handlePageHover: (page: number) => {

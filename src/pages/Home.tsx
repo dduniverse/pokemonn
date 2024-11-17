@@ -8,11 +8,11 @@ import SelectRegion from '../components/SelectRegion';
 import Pagenation from '../components/common/Pagenation';
 
 import { queries } from '../api/queries';
-import { homeHandlers } from '../handlers/homeHandlers';
 import { getProcessedData } from '../utils/dataProcessing';
 import { usePageStore } from '../store/usePageStore';
 import { CombinedPokemonType } from '../types/schemas';
 import { useAdditionalData } from '../hooks/useAdditionalData';
+import { useHomeHandlers } from '../hooks/useHomeHandlers';
 
 
 const ITEMS_PER_PAGE = 20;
@@ -20,7 +20,6 @@ const ITEMS_PER_PAGE = 20;
 function Home() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [fetchedPages, setFetchedPages] = useState<Set<number>>(new Set());
 
   const {
     currentPage,
@@ -38,7 +37,7 @@ function Home() {
     handleSearchChange, 
     handlePageHover, 
     handlePageChange 
-  } = homeHandlers({setSelectedSortOption, setCurrentPage, setSelectedRegion, setSearchQuery, setFetchedPages, selectedRegion, scrollRef});
+  } = useHomeHandlers({setSelectedSortOption, setCurrentPage, setSelectedRegion, setSearchQuery, selectedRegion, scrollRef});
 
   const { data, error, isPending } = useQuery(queries.getPokemonData(selectedRegion, currentPage, ITEMS_PER_PAGE)); // 기본 데이터 요청
   const { data: searchData, error: searchError, isPending: searchPending } = useQuery(queries.getPokemonByName(searchQuery),); // 검색
